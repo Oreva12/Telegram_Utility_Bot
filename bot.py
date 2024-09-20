@@ -3,7 +3,7 @@ from telegram.ext import Application, CommandHandler, MessageHandler, filters
 
 # /start command handler
 async def start(update: Update, context) -> None:
-    await update.message.reply_text('Hi People Of God!')
+    await update.message.reply_text('Hello Aderonke(LOML), you are the best❤')
 
 # /help command handler
 async def help_command(update: Update, context) -> None:
@@ -13,7 +13,7 @@ async def help_command(update: Update, context) -> None:
     /help -> This particular message 
     /content -> This is just a random bot doing nothing much 
     /backend github roadmap -> Complete Backend road map you need to check out 
-    /contact -> My Contactb
+    /contact -> My Contact
     ''')
 
 # Echo handler (replies with the same message sent by the user)
