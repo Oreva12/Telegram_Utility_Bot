@@ -1,5 +1,8 @@
 from telegram import Update
 from telegram.ext import Application, CommandHandler, MessageHandler, filters
+import dotenv
+import os
+dotenv.load_dotenv()
 
 # /start command handler
 async def start(update: Update, context) -> None:
@@ -31,7 +34,7 @@ async def contact(update: Update, context) -> None:
 
 def main() -> None:
     # Your bot token from BotFather
-    TOKEN = '7260651056:AAGc1IDbyyUylraBh0pv3k2wBvNzqlvlIrQ'
+    TOKEN = os.environ.get('TOKEN')
 
     # Create the Application object and pass your bot's token
     app = Application.builder().token(TOKEN).build()
