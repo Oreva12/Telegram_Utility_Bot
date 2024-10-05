@@ -4,10 +4,7 @@ import dotenv
 import os
 dotenv.load_dotenv()
 
-# /start command handler
-async def start(update: Update, context) -> None:
-    await update.message.reply_text('Hello Aderonke(LOML), you are the best❤')
-
+print("Hi")
 # /help command handler
 async def help_command(update: Update, context) -> None:
     await update.message.reply_text(
@@ -20,7 +17,17 @@ async def help_command(update: Update, context) -> None:
     ''')
 
 # Echo handler (replies with the same message sent by the user)
+async def generate_greeting(update: Update, context) -> str:
+    user_name = update.message.from_user.first_name
+    greeting = f"Hello {user_name}, welcome to Orevaoghene's Utility bot!"
+    return greeting
+
+async def start(update: Update, context) -> None:
+    greeting_message = await generate_greeting(update, context)  # Fetch the message
+    await update.message.reply_text(greeting_message)
+
 async def echo(update: Update, context) -> None:
+
     await update.message.reply_text(update.message.text)
 
 async def content(update: Update, context) -> None:
