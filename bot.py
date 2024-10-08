@@ -48,7 +48,7 @@ def get_or_create_user(telegram_id, username):
         cursor.close()
         connection.close()
 
-
+git 
 # /help command handler
 async def help_command(update: Update, context) -> None:
     await update.message.reply_text(
