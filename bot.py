@@ -2,8 +2,6 @@ from telegram import Update
 from telegram.ext import Application, CommandHandler, MessageHandler, filters
 import dotenv
 import os
-from flask import Flask, request, jsonify
-import requests 
 import mysql.connector
 from mysql.connector import Error
 
