@@ -1,2 +1,5 @@
 python-dotenv
 python-telegram-bot
+gunicorn
+mysql-connector-python
+flask
