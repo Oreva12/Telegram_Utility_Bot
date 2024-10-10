@@ -1,3 +1,5 @@
 python-dotenv
 python-telegram-bot
 mysql-connector-python
+requests
+flask
