@@ -53,7 +53,7 @@ async def help_command(update: Update, context) -> None:
     /start -> Welcome to this Bot 
     /help -> This particular message 
     /content -> This is just a random bot doing nothing much 
-    /backend github roadmap -> Complete Backend road map you need to check out 
+    /backend_github_roadmap -> Complete Backend road map you need to check out 
     /contact -> My Contact
     '''
     )
@@ -97,7 +97,7 @@ def main() -> None:
     # Register handlers
     app.add_handler(CommandHandler("start", start))
     app.add_handler(CommandHandler("content", content))
-    app.add_handler(CommandHandler("backend", backend))
+    app.add_handler(CommandHandler("backend_github_roadmap", backend))
     app.add_handler(CommandHandler("contact", contact))
     app.add_handler(CommandHandler("help", help_command))
 
