@@ -1,3 +1,6 @@
+import utils.http_session
+import utils.transport
+import utils.session
 from telegram import Update
 from telegram.ext import Application, CommandHandler, MessageHandler, filters
 import dotenv
