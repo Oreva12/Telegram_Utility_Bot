@@ -8,6 +8,7 @@ from mysql.connector import Error
 dotenv.load_dotenv()
 
 # Connect to the MySQL database
+'''
 def create_db_connection():
     try:
         connection = mysql.connector.connect(
@@ -45,6 +46,7 @@ def get_or_create_user(telegram_id, username):
     finally:
         cursor.close()
         connection.close()
+'''
 
 # /help command handler
 async def help_command(update: Update, context) -> None:
@@ -57,7 +59,7 @@ async def help_command(update: Update, context) -> None:
     /contact -> My Contact
     '''
     )
-
+'''
 # Generate greeting for user
 async def generate_greeting(update: Update, context) -> str:
     user_name = update.message.from_user.first_name
@@ -68,11 +70,11 @@ async def generate_greeting(update: Update, context) -> str:
 
     greeting = f"Hello {user_name}, welcome to Orevaoghene's Utility bot! Your User ID is {user_id}."
     return greeting
-
+'''
 
 async def start(update: Update, context) -> None:
-    greeting_message = await generate_greeting(update, context)  # Fetch the message
-    await update.message.reply_text(greeting_message)
+    #greeting_message = await generate_greeting(update, context)  # Fetch the message
+    await update.message.reply_text("Hi, Its Oreva on here!")
 
 async def echo(update: Update, context) -> None:
     await update.message.reply_text(update.message.text)
@@ -89,7 +91,7 @@ async def contact(update: Update, context) -> None:
 # Main function
 def main() -> None:
     # Your bot token from BotFather
-    TOKEN = os.environ.get('TOKEN')
+    TOKEN = "7260651056:AAH6XUlI5G7vQSgG2wB3TExCVCZJBSZQjLU"
 
     # Create the Application object and pass your bot's token
     app = Application.builder().token(TOKEN).build()
