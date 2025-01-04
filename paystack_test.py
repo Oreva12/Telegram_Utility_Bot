@@ -6,7 +6,7 @@ ctx=paystack.Paystack()
 initialize transaction
 
 """
-# print(ctx.initialize_transaction("dipoagboola2019@gmail.com",200))
+print(ctx.initialize_transaction("ovedheo@gmail.com",200))
 
 
 
