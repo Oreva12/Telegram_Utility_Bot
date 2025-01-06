@@ -1,15 +1,18 @@
+
+from flask import app, jsonify, request
 from telegram import Update
 from telegram.ext import Application, CommandHandler, MessageHandler, filters
-import dotenv
+from paystack_integration import Paystack
 import os
+import dotenv
 import mysql.connector
 from mysql.connector import Error
 
+
 dotenv.load_dotenv()
 
-# Connect to the MySQL database
-'''
 def create_db_connection():
+    """Create and return a database connection."""
     try:
         connection = mysql.connector.connect(
             host=os.getenv('DB_HOST'),
@@ -24,87 +27,69 @@ def create_db_connection():
         print(f"Error connecting to MySQL: {e}")
         return None
 
-# Insert a new user or fetch existing user
 def get_or_create_user(telegram_id, username):
+    """Fetch or create a user in the database."""
     connection = create_db_connection()
     cursor = connection.cursor()
     try:
-        # Check if user already exists
         cursor.execute("SELECT user_id FROM users WHERE telegram_id = %s", (telegram_id,))
         result = cursor.fetchone()
 
         if result:
-            return result[0]  # user_id
+            return result[0]  # Return existing user_id
         else:
-            # Insert new user
             cursor.execute(
                 "INSERT INTO users (telegram_id, username) VALUES (%s, %s)",
                 (telegram_id, username)
             )
             connection.commit()
-            return cursor.lastrowid  # return newly created user_id
+            return cursor.lastrowid  # Return newly created user_id
     finally:
         cursor.close()
         connection.close()
-'''
-
-# /help command handler
-async def help_command(update: Update, context) -> None:
-    await update.message.reply_text(
-    ''' 
-    /start -> Welcome to this Bot 
-    /help -> This particular message 
-    /content -> This is just a random bot doing nothing much 
-    /backend_github_roadmap -> Complete Backend road map you need to check out 
-    /contact -> My Contact
-    '''
-    )
-'''
-# Generate greeting for user
-async def generate_greeting(update: Update, context) -> str:
-    user_name = update.message.from_user.first_name
-    telegram_id = update.message.from_user.id
-
-    # Store user in database
-    user_id = get_or_create_user(telegram_id, user_name)
-
-    greeting = f"Hello {user_name}, welcome to Orevaoghene's Utility bot! Your User ID is {user_id}."
-    return greeting
-'''
 
 async def start(update: Update, context) -> None:
-    #greeting_message = await generate_greeting(update, context)  # Fetch the message
-    await update.message.reply_text("Hi, Its Oreva on here!")
+    """Handle the /start command."""
+    user_name = update.message.from_user.first_name
+    greeting_message = f"Hi {user_name}, welcome to the Data Buying Bot!\n\n"
+    greeting_message += "Use the /buy <amount> command to buy data."
+    await update.message.reply_text(greeting_message)
 
-async def echo(update: Update, context) -> None:
-    await update.message.reply_text(update.message.text)
 
-async def content(update: Update, context) -> None:
-    await update.message.reply_text('We have nothing much in this bot yet')
+async def buy_data(update: Update, context) -> None:
+    """Handle the /buy <amount> command."""
+    # Get the amount from the user's command (e.g., /buy 100)
+    if len(context.args) == 0:
+        await update.message.reply_text("Please provide an amount. Usage: /buy <amount>")
+        return
+    
+    try:
+        amount = int(context.args[0])
+    except ValueError:
+        await update.message.reply_text("Please provide a valid amount in numbers.")
+        return
+    
+    # Create a Paystack instance and initialize a transaction
+    paystack = Paystack(secret_key=os.getenv("PAYSTACK_SECRET_KEY"))
+    email = "ovedheo@gmail.com"
+    transaction_data = paystack.initialize_transaction(email=email, amount=amount)
 
-async def backend(update: Update, context) -> None:
-    await update.message.reply_text('Backend roadmap link: https://github.com/PI-Space/Backend-Roadmap-2024')
+    if transaction_data['status']:
+        payment_url = transaction_data['data']['authorization_url']
+        await update.message.reply_text(f"Click here to complete your payment: {payment_url}")
+    else:
+        await update.message.reply_text(f"Error initializing payment: {transaction_data['message']}")
 
-async def contact(update: Update, context) -> None:
-    await update.message.reply_text('contact me: wa.me/+2349019296990')
 
-# Main function
-def main() -> None:
-    # Your bot token from BotFather
-    TOKEN = "7260651056:AAH6XUlI5G7vQSgG2wB3TExCVCZJBSZQjLU"
 
-    # Create the Application object and pass your bot's token
+def main():
+    TOKEN = os.getenv('TELEGRAM_BOT_TOKEN')
     app = Application.builder().token(TOKEN).build()
 
     # Register handlers
-    app.add_handler(CommandHandler("start", start))
-    app.add_handler(CommandHandler("content", content))
-    app.add_handler(CommandHandler("backend_github_roadmap", backend))
-    app.add_handler(CommandHandler("contact", contact))
-    app.add_handler(CommandHandler("help", help_command))
-
-    # Register a handler for non-command messages (echoes the user's messages)
-    app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, echo))
+    app.add_handler(CommandHandler("start",start))
+    app.add_handler(CommandHandler("buy", buy_data))
+    
 
     # Start the bot
     app.run_polling()
